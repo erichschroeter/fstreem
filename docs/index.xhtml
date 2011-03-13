@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE  html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <title>Java FileSystem TreeModel</title>
+        <style type="text/css">
+html, body { margin-left: 10%; margin-right: 10%; font-family: Arial, sans-serif; }
+h1, h2 { border-bottom: 1px #36c solid; }
+h1 { width: 67%; }
+h2 { width: 50%; padding-left: 0.125in; }
+div, p, dl { text-align: justify; padding-left: 0.25in; }
+img { border: 0px; }
+
+.java   { background-color: #eee; color: black; margin-left: 2em; 
+          margin-right: 2em; padding: 0.5em; width: 40em;}
+.shell  { background-color: black; color: silver;
+          margin-left: 2em; margin-right: 2em; padding: 0.5em; width: 40em;}
+
+.bottom { text-align: center; }
+        </style>
+    </head>
+    <body>
+        <h1 id="top">Java FileSystem TreeModel</h1>
+        <p>A <a href="http://java.sun.com/j2se/1.3/docs/api/javax/swing/tree/TreeModel.html">TreeModel</a>
+            implementation that reads the underlying file system to generate
+            the tree nodes.</p>
+        <p>This implementation is dead-simple &mdash; no automatic refresh
+            when the file system changes, no model events, no nothing.</p>
+
+        <h2 id="potential-uses">Potential Uses</h2>
+        <p>This library should be useful in editors, preferences panels, etc.
+            Basically, anywhere a simple filesystem needs to be shown.
+            Since it doesn't have many options, the API is dead
+            easy to understand.</p>
+
+        <h2 id="screenshot">Requisite Screenshot</h2>
+        <div style="text-align: center">
+            <img src="simpletreeview.png"
+                alt="Screenshot of SimpleTreeView - the sample that comes with the library"/>
+        </div>
+        <p>The model was instantiated with the root being the project's source
+            folder.</p>
+        <p>You also have to realize that this is a <strong>TreeModel</strong>,
+            not a <code>JTree</code> reimplementation.  So, the icons and
+            everything else is the base <code>JTree</code>.  Use
+            <a href="http://jgoodies.com/freeware/looksdemo/index.html">JGoodies Looks</a>
+            for a different look'n'feel for your applications.</p>
+
+        <h2 id="usage">Usage</h2>
+        <p>A simple instantiation of <a href="api/net/sf/fstreem/FileSystemTreeModel.html#FileSystemTreeModel(java.io.File)">FileSystemTreeModel</a>
+            with the tree's root as a <a href="http://java.sun.com/j2se/1.3/docs/api/java/io/File.html">File</a>
+            instance is all you need:</p>
+        <pre xml:space="preserve" class="java">JTree tree = new JTree();
+File fileSystemRoot = new File(".").getCanonicalFile();
+tree.setModel(new FileSystemTreeModel(root));</pre>
+
+        <h2 id="apidocs">API Documentation</h2>
+        <p>The API documentation is available <a href="api/index.html">here</a>.</p>
+
+        <h2 id="compatibility">Compatibility</h2>
+        <p>This library was built with Java 2 1.3 in mind.  No 1.4 or 1.5
+            features are used.  The library is compiled on the 1.4 platform,
+            but should directly run using any 1.3 or better platform.</p>
+        <p>Javac's <a href="http://java.sun.com/j2se/1.4/docs/tooldocs/windows/javac.html#crosscomp-options">target</a>
+            option is used to generate 1.3 class files.  See the
+            <a href="http://ant.apache.org/">Ant</a> build file for details.</p>
+
+        <h2 id="contact">Contact</h2>
+        <p>Please contact
+            <a href="mailto:fbos@users.sourceforge.net">fbos@users.sourceforge.net</a>
+            (Fran&ccedil;ois Beausoleil) for any requests, bugs or other
+            information.</p>
+
+        <h2 id="license">License</h2>
+        <p>Oh yeah, I almost forgot&hellip;  This library is distributed under
+            no license, meaning it's in the public domain.  You may do as you
+            wish with it &mdash; sell it, destroy it, use it, not use it,
+            etc.</p>
+        <p>If you <em>do</em> use it, I would appreciate a quick E-Mail to
+            tell me so, but beyond that, nothing is required.</p>
+        <p>Enjoy !</p>
+
+        <h2 id="source-code">Source Code</h2>
+        <p>You must use <a href="http://subversion.tigris.org/">Subversion</a>
+            to access this project's source code.  See the
+            <a href="http://svnbook.red-bean.com/">Subversion Book</a> for
+            reference information and general usage information.</p>
+        <p>To checkout, once you have installed <span class="product">Subversion</span>:</p>
+        <pre xml:space="preserve" class="shell">$ svn checkout http://opensvn.csie.org/fstreem/trunk</pre>
+        <p>To get a list of releases, visit
+            <a href="http://opensvn.csie.org/fstreem/tags/">http://opensvn.csie.org/fstreem/tags/</a>.</p>
+
+        <h2 id="release-history">Release History / Changes</h2>
+        <dl>
+            <dt>October 4, 2004 - v0.1</dt>
+            <dd>Initial release</dd>
+        </dl>
+
+        <div class="bottom">
+            <a href="http://sourceforge.net">
+                <img src="http://sourceforge.net/sflogo.php?group_id=119003&amp;type=5"
+                    width="210" height="62" alt="SourceForge.net Logo"/>
+            </a>
+        </div>
+    </body>
+</html>
