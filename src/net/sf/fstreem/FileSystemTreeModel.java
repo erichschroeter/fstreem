@@ -3,7 +3,10 @@ package net.sf.fstreem;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+
 import java.io.File;
+import java.io.FileFilter;
+import java.util.Vector;
 
 /**
  * {@link TreeModel TreeModel} implementation that <strong>does not</strong>
@@ -14,8 +17,13 @@ import java.io.File;
 public class FileSystemTreeModel implements TreeModel {
     private final FileSystemTreeNode root;
 
+    public FileSystemTreeModel(File root, Vector<FileFilter> filters) {
+        this.root = FileSystemTreeNode.create(root, filters);
+    }
+
     public FileSystemTreeModel(File root) {
-        this.root = FileSystemTreeNode.create(root);
+        Vector<FileFilter> filters = new Vector<FileFilter>();
+        this.root = FileSystemTreeNode.create(root, filters);
     }
 
     /**

@@ -1,18 +1,28 @@
 package net.sf.fstreem;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Vector;
 
 /**
  * A tree node that is based on the underlying file system.
  */
 public abstract class FileSystemTreeNode {
     protected final File location;
-
+    
+    protected Vector<FileFilter> filters;
+    
     private FileSystemTreeNode(File location) {
-        this.location = location;
+        this(location, new Vector<FileFilter>());
     }
 
+    private FileSystemTreeNode(File location, Vector<FileFilter> filters) {
+        this.location = location;
+        this.filters = filters;
+    }
+    
     /**
      * Returns the {@link File File} instance behind this node.
      *
@@ -81,19 +91,31 @@ public abstract class FileSystemTreeNode {
      *                 attached.
      * @return A {@link FileSystemTreeNode FileSystemTreeNode} instance.
      */
-    public static FileSystemTreeNode create(File location) {
-        if (location.isDirectory()) {
-            return new DirectoryTreeNode(location);
+    public static FileSystemTreeNode create(File location, Vector<FileFilter> filters) {
+    	if (location.isDirectory()) {
+            return new DirectoryTreeNode(location, filters);
         } else {
             return new FileTreeNode(location);
         }
     }
+    
+    public static FileSystemTreeNode create(File location) {
+        Vector<FileFilter> filters = new Vector<FileFilter>();
 
+    	if (location.isDirectory()) {
+            return new DirectoryTreeNode(location, filters);
+        } else {
+            return new FileTreeNode(location);
+        }
+    }
+    
     private static final class DirectoryTreeNode extends FileSystemTreeNode {
-        private File[] children;
+        //private File[] children;
 
-        public DirectoryTreeNode(File location) {
-            super(location);
+        private Vector<File> children;
+        
+        public DirectoryTreeNode(File location, Vector<FileFilter> filters) {
+            super(location, filters);
         }
 
         public boolean isFile() {
@@ -102,13 +124,13 @@ public abstract class FileSystemTreeNode {
 
         public FileSystemTreeNode getChildAt(int index) {
             loadChildren();
-            return FileSystemTreeNode.create(children[index]);
+            return FileSystemTreeNode.create(children.elementAt(index), filters);
         }
 
         public int getChildCount() {
             loadChildren();
             if (children != null) {
-            	return children.length;	
+            	return children.size();	
             } else {
             	return 0;
             }
@@ -117,9 +139,23 @@ public abstract class FileSystemTreeNode {
         private synchronized void loadChildren() {
             if (null != children) return;
 
-            children = location.listFiles();
+            children = new Vector<File>();
+            File[] preFilteredChildren = location.listFiles();
+            
+            if (preFilteredChildren != null) {
+	            // only accept children into Vector if they pass a filter
+	            for (File file : preFilteredChildren) {
+	            	for (FileFilter filter : filters) {
+	            		if (filter.accept(file)) {
+	            			children.add(file);
+	            		}
+	            	}
+	            }
+            }
+            
             if (children != null) {
-            	Arrays.sort(children, FileComparator.INSTANCE);
+//            	Arrays.sort(children, FileComparator.INSTANCE);
+            	Collections.sort(children, FileComparator.INSTANCE);
             }
         }
     }
