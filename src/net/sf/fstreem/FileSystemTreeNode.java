@@ -143,18 +143,21 @@ public abstract class FileSystemTreeNode {
             File[] preFilteredChildren = location.listFiles();
             
             if (preFilteredChildren != null) {
-	            // only accept children into Vector if they pass a filter
-	            for (File file : preFilteredChildren) {
-	            	for (FileFilter filter : filters) {
-	            		if (filter.accept(file)) {
-	            			children.add(file);
-	            		}
-	            	}
-	            }
+            	if (!filters.isEmpty()) {
+		            // only accept children into Vector if they pass a filter
+		            for (File file : preFilteredChildren) {
+		            	for (FileFilter filter : filters) {
+		            		if (filter.accept(file)) {
+		            			children.add(file);
+		            		}
+		            	}
+		            }
+            	} else {
+            		children.addAll(Arrays.asList(preFilteredChildren));
+            	}
             }
             
             if (children != null) {
-//            	Arrays.sort(children, FileComparator.INSTANCE);
             	Collections.sort(children, FileComparator.INSTANCE);
             }
         }

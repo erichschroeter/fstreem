@@ -1,7 +1,9 @@
 package net.sf.fstreem;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
+import java.util.Vector;
 
 public class FileSystemTreeModelTest extends AbstractFileSystemTestCase {
     private FileSystemTreeModel model;
@@ -84,5 +86,70 @@ public class FileSystemTreeModelTest extends AbstractFileSystemTestCase {
                 createFolder("anne"));
 
         assertEquals(-1, model.getIndexOfChild(anne, anne));
+    }
+    
+    public void testReturnsOnlyFilteredFiles() throws IOException {
+    	/*
+    	 * 	tmp/
+    	 * 		file1.svg
+    	 * 		files/
+    	 * 			file1.svg
+    	 * 			file2.svg
+    	 * 			file1.sh
+    	 * 			file1.txt
+    	 * 		text/
+    	 * 			file1.txt
+    	 * 			file2.txt
+    	 */
+    	
+    	createFile("file1.svg");
+    	createFolder("files");
+    	createFile("files/file1.svg");
+    	createFile("files/file2.svg");
+    	createFile("files/file1.sh");
+    	createFile("files/file2.txt");
+    	createFolder("text");
+    	createFile("text/file1.txt");
+    	createFile("text/file2.txt");
+    	
+    	Vector<FileFilter> filters = new Vector<FileFilter>();
+    	FileFilter svgFilter = new FileFilter() {
+			
+			@Override
+			public boolean accept(File pathname) {
+		        String fileName = pathname.getName();
+		        int i = fileName.lastIndexOf('.');
+		        if (i > 0 && i < fileName.length() - 1)
+		        {
+		            String extension = fileName.substring(i+1).toLowerCase();
+		            if(extension.equals("svg"))
+		            {
+		                return true;
+		            }
+		        }
+		        return false;
+			}
+		};
+		FileFilter directoryFilter = new FileFilter() {
+			
+			@Override
+			public boolean accept(File pathname) {
+				return pathname.isDirectory();
+			}
+		};
+		
+    	filters.add(svgFilter);
+    	filters.add(directoryFilter);
+    	
+    	FileSystemTreeNode root =  FileSystemTreeNode.create(getTestRoot(), filters);
+    	System.out.println(root.getChildAt(0).location);
+    	System.out.println(root.getChildAt(1).location);
+    	System.out.println(root.getChildAt(2).location);
+    	// root should should have 2 directories and 1 svg file
+    	assertEquals(3, root.getChildCount());
+    	// files directory should have 2 svg files
+    	assertEquals(2, root.getChildAt(0).getChildCount());
+    	// text directory should have 0 files
+    	assertEquals(0, root.getChildAt(1).getChildCount());
     }
 }
